@@ -1,10 +1,16 @@
+# encoding=utf8
 from flask import Flask, redirect, url_for, session, render_template, send_from_directory, jsonify
 from flask_oauth import OAuth
 
+import sys
+import json
+
+reload(sys)
+sys.setdefaultencoding('utf8')  # preventing ASCII error
 
 GOOGLE_CLIENT_ID = '215535738644-fopbesd5dgmcelhcrocf3natuek8i5jo.apps.googleusercontent.com'
 GOOGLE_CLIENT_SECRET = 'lBdAIaXTCxR4-Dx8jR1dHdSa'
-REDIRECT_URI = '/oauth2callback'  # one of the Redirect URIs from Google APIs console
+REDIRECT_URI = '/oauth2callback'
 
 SECRET_KEY = 'development key for VacMan'
 DEBUG = True
@@ -58,8 +64,9 @@ def index():
             session.pop('access_token', None)
             return redirect(url_for('login'))
         return res.read()
-
-    return render_template('index.html')
+    data = res.read()
+    data_json = json.loads(data)
+    return render_template('index.html', account=data_json)
 
 
 @app.route('/login')
