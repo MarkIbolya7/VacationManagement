@@ -1,0 +1,49 @@
+.show-data {
+    display: none;
+}
+
+.stats {
+    padding-top: 8px;
+}
+
+#headline-text {
+    display: none;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    padding-bottom: 75px;
+}
+
+#loading_image {
+    display: none;
+}
+
+#mc_embed_signup {
+    color: #333 !important;
+}
+
+.footer {
+    background-color: #4e5d6c !important;
+}
+
+#tweet {
+    width: 400px !important;
+}
+
+#tweet iframe {
+    border: none !important;
+    box-shadow: none !important;
+}
+
+#mc_embed_signup {
+    background: #2b3e50;
+    clear: left;
+    font: 14px Helvetica, Arial, sans-serif;
+    color: #ebebeb !important;
+    border: 1px solid #eee;
+}
+
+#mc_embed_signup .button {
+    background-color: #df691a;
+}
