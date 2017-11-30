@@ -44,6 +44,11 @@ def send_css(path):
     return send_from_directory(app.static_folder + '/css/', path)
 
 
+@app.route('/img/<path:path>')
+def send_img(path):
+    return send_from_directory(app.static_folder + '/img/', path)
+
+
 @app.route('/')
 def index():
     access_token = session.get('access_token')
