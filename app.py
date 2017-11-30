@@ -1,7 +1,8 @@
 # encoding=utf8
-from flask import Flask, redirect, request, url_for, session, render_template, send_from_directory, jsonify
+from flask import Flask, redirect, request, url_for, session, render_template, send_from_directory, jsonify, Response
 from flask_oauth import OAuth
 
+from functools import wraps
 import sys
 import json
 
@@ -20,7 +21,6 @@ app.debug = DEBUG
 app.secret_key = SECRET_KEY
 oauth = OAuth()
 
-
 google = oauth.remote_app('google',
                           base_url='https://www.google.com/accounts/',
                           authorize_url='https://accounts.google.com/o/oauth2/auth',
@@ -32,7 +32,6 @@ google = oauth.remote_app('google',
                           access_token_params={'grant_type': 'authorization_code'},
                           consumer_key=GOOGLE_CLIENT_ID,
                           consumer_secret=GOOGLE_CLIENT_SECRET)
-
 
 
 @app.route('/js/<path:path>')
@@ -52,23 +51,6 @@ def send_img(path):
 
 @app.route('/')
 def index():
-    data_json = json.loads(getuserinfo())
-    return render_template('index.html', account=data_json)
-
-
-@app.route('/login')
-def login():
-    callback = url_for('authorized', _external=True)
-    return google.authorize(callback=callback)
-
-
-@app.route('/logout')
-def logout():
-    session.pop('access_token')
-    return None
-
-
-def getuserinfo():
     access_token = session.get('access_token')
     if access_token is None:
         return redirect(url_for('login'))
@@ -88,15 +70,84 @@ def getuserinfo():
             return redirect(url_for('login'))
         return res.read()
     data = res.read()
-    return data
+    data_json = json.loads(data)
+
+    from vacman.account import Account
+    Account(data_json['email']).isnewuser()
+    return render_template('index.html', account=data_json)
+
+
+@app.route('/login')
+def login():
+    callback = url_for('authorized', _external=True)
+    return google.authorize(callback=callback)
+
+
+@app.route('/logout')
+def logout():
+    session.pop('access_token')
+    return None
+
+
+def check_auth(username, password):
+    """This function is called to check if a username /
+    password combination is valid.
+    """
+    return username == 'admin' and password == 'admin'
+
+
+def authenticate():
+    """Sends a 401 response that enables basic auth"""
+    return Response(
+        'Could not verify your access level for that URL.\n'
+        'You have to login with proper credentials', 401,
+        {'WWW-Authenticate': 'Basic realm="Login Required"'})
+
+
+def requires_auth(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        auth = request.authorization
+        if not auth or not check_auth(auth.username, auth.password):
+            return authenticate()
+        return f(*args, **kwargs)
+
+    return decorated
+
+
+@app.route('/admin')
+@requires_auth
+def secret_page():
+    from vacman import admin
+    return render_template('admin.html')
+
 
 @app.route('/request-vac', methods=['POST'])
 def request_vac():
-    data_json = json.loads(getuserinfo())
+    access_token = session.get('access_token')
+    if access_token is None:
+        return redirect(url_for('login'))
+
+    access_token = access_token[0]
+    from urllib2 import Request, urlopen, URLError
+
+    headers = {'Authorization': 'OAuth ' + access_token}
+    req = Request('https://www.googleapis.com/oauth2/v1/userinfo',
+                  None, headers)
+    try:
+        res = urlopen(req)
+    except URLError, e:
+        if e.code == 401:
+            # Unauthorized - bad token
+            session.pop('access_token', None)
+            return redirect(url_for('login'))
+        return res.read()
+    data = res.read()
+    data_json = json.loads(data)
 
     from vacman.request_vacation import VacMan
     try:
-        rv = VacMan(data_json['id'],request.form['date'])
+        rv = VacMan(data_json['id'], request.form['date'])
         rv.request()
     except ValueError as err:
         return jsonify({"error": str(err)}), 400
