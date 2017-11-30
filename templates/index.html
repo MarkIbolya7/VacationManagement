@@ -61,7 +61,17 @@
                 showNotes: true,
                 startWeek: 'monday',
                 dayClick: function(date, view) {
-                	alert(date.getDate() + "-" + (date.getMonth() + 1) + "-" + date.getFullYear());
+                	req_date = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
+                	$.ajax({
+                        type: "POST",
+                        url: '/request-vac',
+                        data: {date: req_date}
+                    }).done(function (response) {
+                        alert('inserted')
+                    }).fail(function (data) {
+                        data = JSON.parse(data.responseText)
+                        alert(data.error)
+                    })
                 }
 			});
 

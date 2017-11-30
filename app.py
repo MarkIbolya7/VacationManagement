@@ -1,5 +1,5 @@
 # encoding=utf8
-from flask import Flask, redirect, url_for, session, render_template, send_from_directory, jsonify
+from flask import Flask, redirect, request, url_for, session, render_template, send_from_directory, jsonify
 from flask_oauth import OAuth
 
 import sys
@@ -19,6 +19,7 @@ app = Flask(__name__)
 app.debug = DEBUG
 app.secret_key = SECRET_KEY
 oauth = OAuth()
+
 
 google = oauth.remote_app('google',
                           base_url='https://www.google.com/accounts/',
@@ -51,6 +52,23 @@ def send_img(path):
 
 @app.route('/')
 def index():
+    data_json = json.loads(getuserinfo())
+    return render_template('index.html', account=data_json)
+
+
+@app.route('/login')
+def login():
+    callback = url_for('authorized', _external=True)
+    return google.authorize(callback=callback)
+
+
+@app.route('/logout')
+def logout():
+    session.pop('access_token')
+    return None
+
+
+def getuserinfo():
     access_token = session.get('access_token')
     if access_token is None:
         return redirect(url_for('login'))
@@ -70,20 +88,20 @@ def index():
             return redirect(url_for('login'))
         return res.read()
     data = res.read()
-    data_json = json.loads(data)
-    return render_template('index.html', account=data_json)
+    return data
 
+@app.route('/request-vac', methods=['POST'])
+def request_vac():
+    data_json = json.loads(getuserinfo())
 
-@app.route('/login')
-def login():
-    callback = url_for('authorized', _external=True)
-    return google.authorize(callback=callback)
+    from vacman.request_vacation import VacMan
+    try:
+        rv = VacMan(data_json['id'],request.form['date'])
+        rv.request()
+    except ValueError as err:
+        return jsonify({"error": str(err)}), 400
 
-
-@app.route('/logout')
-def logout():
-    session.pop('access_token')
-    return None
+    return ''
 
 
 @app.route(REDIRECT_URI)
