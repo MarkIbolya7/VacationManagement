@@ -74,7 +74,8 @@ def index():
 
     from vacman.account import Account
     Account(data_json['email']).isnewuser()
-    return render_template('index.html', account=data_json)
+    usergroup = Account(data_json['email']).getuserstatus()
+    return render_template('index.html', account=data_json, usergroup=usergroup)
 
 
 @app.route('/login')
@@ -145,14 +146,20 @@ def request_vac():
     data = res.read()
     data_json = json.loads(data)
 
-    from vacman.request_vacation import VacMan
-    try:
-        rv = VacMan(data_json['id'], request.form['date'])
-        rv.request()
-    except ValueError as err:
-        return jsonify({"error": str(err)}), 400
+    from vacman.account import Account
+    usergroup = Account(data_json['email']).getuserstatus()
 
-    return ''
+    if (usergroup == 'pending'): # Backend check
+        return ''
+    else:
+        from vacman.request_vacation import VacMan
+        try:
+            rv = VacMan(data_json['email'], request.form['date'])
+            rv.request()
+        except ValueError as err:
+            return jsonify({"error": str(err)}), 400
+
+        return ''
 
 
 @app.route(REDIRECT_URI)

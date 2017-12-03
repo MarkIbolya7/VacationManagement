@@ -6,3 +6,11 @@ body {
 .footer {
     background-color: #4e5d6c !important;
 }
+
+#dncalendar-header h2{
+    color: #ebebeb;
+}
+
+.dncalendar-body thead tr td{
+    color: #ebebeb !important;
+}

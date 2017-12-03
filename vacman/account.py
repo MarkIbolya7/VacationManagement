@@ -21,6 +21,11 @@ class Account():
 
         self.closeDB()
 
+    def getuserstatus(self):
+        self.c.execute("SELECT usergroup FROM accounts WHERE user=?", (self.user,))
+        usergroup = self.c.fetchone()
+        return usergroup[0]
+
     def closeDB(self):
         self.conn.commit()
         self.conn.close()

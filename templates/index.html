@@ -2,7 +2,7 @@
 <head>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
     <script src="/js/s_calendar.js"></script>
-    <script src="js/calendar.js"></script>
+    <script src="/js/calendar.js"></script>
     <link href="/css/bootstrap.css" rel="stylesheet">
     <link href="/css/frontpage.css" rel="stylesheet">
     <link href="/css/theme.css" rel="stylesheet">
@@ -15,7 +15,7 @@
 
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>SvejkAnalytics - Real time Twitter, Reddit and News Sentiment Analyzis</title>
+    <title>Vacation Management</title>
 
 
 </head>
@@ -23,11 +23,11 @@
 <nav class="navbar navbar-default">
     <div class="container-fluid">
         <div class="navbar-header">
-            <a class="navbar-brand" href="#">Vacation Management</a>
+            <a class="navbar-brand" href="/">Vacation Management</a>
         </div>
         <ul class="nav navbar-nav">
-            <li class="" 0><a>Welcome {{ account['name'] }} &nbsp;<img src="{{ account['picture'] }}"
-                                                                       style="max-height:19px"></a></li>
+            <li class="" 0><a><img src="{{ account['picture'] }}" style="max-height:19px"> &nbsp;
+                {{ account['name'] }} ({{ usergroup.title() }})</a></li>
             <li class="active"><a href="#">My Calendar</a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
@@ -61,6 +61,8 @@
                         ],
                         showNotes: true,
                         startWeek: 'monday',
+
+                        {% if usergroup != "pending" %}
                         dayClick: function (date, view) {
                             req_date = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
                             $.ajax({
@@ -74,6 +76,7 @@
                                 alert(data.error)
                             })
                         }
+                        {% endif %}
                     });
 
                     // init calendar
