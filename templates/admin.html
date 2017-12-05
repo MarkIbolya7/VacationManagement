@@ -1,4 +1,50 @@
-import time
-import sqlite3
+<html>
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script src="/js/s_calendar.js"></script>
+    <script src="/js/calendar.js"></script>
+    <link href="/css/bootstrap.css" rel="stylesheet">
+    <link href="/css/frontpage.css" rel="stylesheet">
+    <link href="/css/theme.css" rel="stylesheet">
 
-import os
+
+    <link href="/css/calendar.css" rel="stylesheet">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"
+          integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    <script src="/js/bootstrap.js"></script>
+
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Vacation Management</title>
+
+
+</head>
+<body>
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="/">Vacation Management</a>
+        </div>
+        <ul class="nav navbar-nav">
+            <li class="" 0><a><img src="{{ account['picture'] }}" style="max-height:19px"> &nbsp;
+                {{ account['name'] }} ({{ usergroup.title() }})</a></li>
+            <li class="active"><a href="#">My Calendar</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+            <li><a href="/logout">Log Out</a></li>
+        </ul>
+    </div>
+</nav>
+
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+
+        </div>
+    </div>
+    <div class="footer navbar-fixed-bottom">
+        <center>Vacation Management - Made by Márk Ibolya</center>
+    </div>
+</body>
+</html>
