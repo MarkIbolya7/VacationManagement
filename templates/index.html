@@ -57,12 +57,15 @@
                         dataTitles: {defaultDate: 'default', today: 'hari ini'},
                         notes: [
                             //{ "date": "2016-05-25", "note": ["Natal"] },
-                            //{ "date": "2016-05-12", "note": ["Tahun Baru"] }
+                            {% for vacation in vacations %}
+                            { "date":"{{vacation[0]}}", "note":["{{vacation[1]}}"]},
+                            {% endfor %}
                         ],
                         showNotes: true,
                         startWeek: 'monday',
 
                         {% if usergroup != "pending" %}
+
                         dayClick: function (date, view) {
                             req_date = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
                             $.ajax({
@@ -70,7 +73,7 @@
                                 url: '/request-vac',
                                 data: {date: req_date}
                             }).done(function (response) {
-                                alert('inserted')
+                                location.reload();
                             }).fail(function (data) {
                                 data = JSON.parse(data.responseText)
                                 alert(data.error)

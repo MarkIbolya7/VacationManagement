@@ -35,6 +35,17 @@ class Account():
         usergroup = self.c.fetchone()
         return usergroup[0]
 
+    def getuservacations(self):
+        dbfile_path = os.path.dirname(os.path.realpath(__file__)) + "/../vacations.sqlite"
+        self.conn = sqlite3.connect(dbfile_path)
+        self.c = self.conn.cursor()
+        self.c.execute("CREATE TABLE IF NOT EXISTS vacations (user STRING, date STRING, status STRING)")
+        self.c.execute("SELECT date, status FROM vacations WHERE user=?", (self.user,))
+        vacations = self.c.fetchall()
+        self.conn.commit()
+        self.conn.close()
+        return vacations
+
     def closeDB(self):
         self.conn.commit()
         self.conn.close()

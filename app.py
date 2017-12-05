@@ -75,7 +75,8 @@ def index():
     from vacman.account import Account
     Account(data_json['email']).isnewuser()
     usergroup = Account(data_json['email']).getuserstatus()
-    return render_template('index.html', account=data_json, usergroup=usergroup)
+    vacations = Account(data_json['email']).getuservacations()
+    return render_template('index.html', account=data_json, usergroup=usergroup, vacations=vacations)
 
 
 @app.route('/login')
