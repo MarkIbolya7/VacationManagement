@@ -15,7 +15,7 @@
 
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Vacation Management</title>
+    <title>Vacation Management Admin</title>
 
 
 </head>
@@ -40,8 +40,39 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-12">
-{{ accounts }}
-            {{requests}}
+            <div class="col-md-4">User</div>
+            <div class="col-md-4">User Group</div>
+            <div class="col-md-4">Change User Group</div>
+            {% for acc in accounts %}
+            <div class="col-md-4">{{acc['user']}}</div>
+            <div class="col-md-4">{{acc['usergroup']}}</div>
+            <div class="col-md-4">
+                <select id="{{acc['user']}}">
+                    <option value="admin" {%if acc['usergroup']=='admin' %}selected="selected"{%endif%}>Admin</option>
+                    <option value="viewer" {%if acc['usergroup']=='viewer' %}selected="selected"{%endif%}>Viewer</option>
+                    <option value="pending" {%if acc['usergroup']=='pending' %}selected="selected"{%endif%}>Viewer</option>
+                </select>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="col-md-12">
+            <div style="border-bottom: 1px solid #888888;margin:20px 0 20px 0"></div>
+            <div class="col-md-4">User</div>
+            <div class="col-md-4">Vacation Request</div>
+            <div class="col-md-4">Action</div>
+            {% for req in requests %}
+            <div class="col-md-4">{{req['user']}}</div>
+            <div class="col-md-4">{{req['date']}}</div>
+            <div class="col-md-4">
+                <select id="{{req['user']}}">
+                    <option value="admin" {%if req['status']=='pending' %}selected="selected"{%endif%}>Pending</option>
+                    <option value="viewer" {%if req['status']=='accepted' %}selected="selected"{%endif%}>Accepter</option>
+                    <option value="pending" {%if req['status']=='declined' %}selected="selected"{%endif%}>Declined</option>
+                </select>
+            </div>
+            {% endfor %}
+            <hr>
         </div>
     </div>
     <div class="footer navbar-fixed-bottom">

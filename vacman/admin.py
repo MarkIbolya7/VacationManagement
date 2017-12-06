@@ -22,15 +22,15 @@ class Admin():
         con = sqlite3.connect(self.users_path)
         con.row_factory = self.dict_factory
         cur = con.cursor()
-        cur.execute("SELECT user,usergroup AS a")
-        return cur.fetchone()["a"]
+        cur.execute("SELECT user,usergroup FROM accounts")
+        return cur.fetchall()
 
     def requests_as_dict(self):
         con = sqlite3.connect(self.requests_path)
         con.row_factory = self.dict_factory
         cur = con.cursor()
-        cur.execute("SELECT user,date,status AS a")
-        return cur.fetchone()["a"]
+        cur.execute("SELECT user,date,status FROM vacations")
+        return cur.fetchall()
 
     def approve(self):
         self.c.execute("UPDATE vacations SET status = 'approved' WHERE user=? AND date=?", (self.user, self.date))

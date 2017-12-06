@@ -14,3 +14,7 @@ body {
 .dncalendar-body thead tr td{
     color: #ebebeb !important;
 }
+
+select{
+    color:#2a323a !important;
+}

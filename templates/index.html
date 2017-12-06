@@ -54,9 +54,8 @@
                         monthNamesShort: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'],
                         dayNames: ['Monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'],
                         dayNamesShort: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-                        dataTitles: {defaultDate: 'default', today: 'hari ini'},
+                        dataTitles: {defaultDate: 'default', today: 'Today'},
                         notes: [
-                            //{ "date": "2016-05-25", "note": ["Natal"] },
                             {% for vacation in vacations %}
                             { "date":"{{vacation[0]}}", "note":["{{vacation[1]}}"]},
                             {% endfor %}
@@ -90,11 +89,6 @@
                     // init calendar
                     my_calendar.build();
 
-                    // update calendar
-                    // my_calendar.update({
-                    // 	minDate: "2016-01-05",
-                    // 	defaultDate: "2016-05-04"
-                    // });
                 });
             </script>
         </div>
