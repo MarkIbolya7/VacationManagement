@@ -33,5 +33,5 @@ class Admin():
         return cur.fetchall()
 
     def approve(self):
-        self.c.execute("UPDATE vacations SET status = 'approved' WHERE user=? AND date=?", (self.user, self.date))
+        self.c.execute("UPDATE vacations SET status = 'accepted' WHERE user=? AND date=?", (self.user, self.date))
         self.closeDB()

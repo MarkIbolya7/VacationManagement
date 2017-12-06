@@ -3,6 +3,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
     <script src="/js/s_calendar.js"></script>
     <script src="/js/calendar.js"></script>
+    <script src="/js/admin.js"></script>
     <link href="/css/bootstrap.css" rel="stylesheet">
     <link href="/css/frontpage.css" rel="stylesheet">
     <link href="/css/theme.css" rel="stylesheet">
@@ -17,7 +18,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Vacation Management Admin</title>
 
-
+    <script>
+        $(document).ready(function(){
+           $('.user_change').change(function () {
+               alert(this.id);
+           });
+           $('.request_change').change(function () {
+               alert(this.id);
+           });
+        });
+    </script>
+$.ajax({
+    type: "POST",
+    url: '/request-vac',
+    data: {date: req_date}
+}).done(function (response) {
+    location.reload();
+}).fail(function (data) {
+    data = JSON.parse(data.responseText)
+    alert(data.error)
+})
 </head>
 <body>
 <nav class="navbar navbar-default">
@@ -47,10 +67,10 @@
             <div class="col-md-4">{{acc['user']}}</div>
             <div class="col-md-4">{{acc['usergroup']}}</div>
             <div class="col-md-4">
-                <select id="{{acc['user']}}">
+                <select class="user_change" id="{{acc['user']}}">
                     <option value="admin" {%if acc['usergroup']=='admin' %}selected="selected"{%endif%}>Admin</option>
+                    <option value="employee" {%if acc['usergroup']=='employee' %}selected="selected"{%endif%}>Employee</option>
                     <option value="viewer" {%if acc['usergroup']=='viewer' %}selected="selected"{%endif%}>Viewer</option>
-                    <option value="pending" {%if acc['usergroup']=='pending' %}selected="selected"{%endif%}>Viewer</option>
                 </select>
             </div>
             {% endfor %}
@@ -65,9 +85,9 @@
             <div class="col-md-4">{{req['user']}}</div>
             <div class="col-md-4">{{req['date']}}</div>
             <div class="col-md-4">
-                <select id="{{req['user']}}">
+                <select class="request_change" data-date="{{req['date']}}" id="{{req['user']}}">
                     <option value="admin" {%if req['status']=='pending' %}selected="selected"{%endif%}>Pending</option>
-                    <option value="viewer" {%if req['status']=='accepted' %}selected="selected"{%endif%}>Accepter</option>
+                    <option value="viewer" {%if req['status']=='accepted' %}selected="selected"{%endif%}>Accepted</option>
                     <option value="pending" {%if req['status']=='declined' %}selected="selected"{%endif%}>Declined</option>
                 </select>
             </div>

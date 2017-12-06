@@ -115,6 +115,13 @@ def secret_page():
     data = res.read()
     data_json = json.loads(data)
 
+
+    from vacman.account import Account
+    usergroup = Account(data_json['email']).getuserstatus()
+
+    if (usergroup != 'admin'): # Backend check
+        return ''
+
     from vacman.account import Account
     Account(data_json['email']).isnewuser()
     usergroup = Account(data_json['email']).getuserstatus()
@@ -150,7 +157,7 @@ def request_vac():
     from vacman.account import Account
     usergroup = Account(data_json['email']).getuserstatus()
 
-    if (usergroup == 'pending'): # Backend check
+    if (usergroup == 'viewer'): # Backend check
         return ''
     else:
         from vacman.request_vacation import VacMan

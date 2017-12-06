@@ -26,7 +26,7 @@ class Account():
             self.c.execute("SELECT user FROM accounts WHERE user = ?", (self.user,))
             row = self.c.fetchone()
             if row is None:
-                self.c.execute("INSERT INTO accounts (user, usergroup) VALUES (?,?)", (self.user, "pending"))
+                self.c.execute("INSERT INTO accounts (user, usergroup) VALUES (?,?)", (self.user, "viewer"))
 
         self.closeDB()
 

@@ -15,7 +15,7 @@ class VacMan():
         self.c.execute("CREATE TABLE IF NOT EXISTS vacations (user STRING, date STRING, status STRING)")
 
     def request(self):
-        self.c.execute("INSERT INTO vacations (user,date,status) VALUES (?,?,?)", (self.user, self.date, "pending"))
+        self.c.execute("INSERT INTO vacations (user,date,status) VALUES (?,?,?)", (self.user, self.date, "viewer"))
         self.closeDB()
 
     def closeDB(self):
