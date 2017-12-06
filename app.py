@@ -93,7 +93,7 @@ def logout():
 
 @app.route('/admin')
 def secret_page():
-    from vacman import admin
+    from vacman.admin import Admin
     access_token = session.get('access_token')
     if access_token is None:
         return redirect(url_for('login'))
@@ -118,8 +118,10 @@ def secret_page():
     from vacman.account import Account
     Account(data_json['email']).isnewuser()
     usergroup = Account(data_json['email']).getuserstatus()
+    accounts= Admin().accounts_as_dict()
+    requests = Admin().requests_as_dict()
 
-    return render_template('admin.html', account=data_json, usergroup=usergroup)
+    return render_template('admin.html', account = data_json, usergroup=usergroup, accounts=accounts, requests=requests)
 
 
 @app.route('/request-vac', methods=['POST'])

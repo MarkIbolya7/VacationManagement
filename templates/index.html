@@ -67,17 +67,22 @@
                         {% if usergroup != "pending" %}
 
                         dayClick: function (date, view) {
+                            taken_dates = [{% for vacation in vacations %}
+                            "{{vacation[0]}}",
+                            {% endfor %}];
                             req_date = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
-                            $.ajax({
-                                type: "POST",
-                                url: '/request-vac',
-                                data: {date: req_date}
-                            }).done(function (response) {
-                                location.reload();
-                            }).fail(function (data) {
-                                data = JSON.parse(data.responseText)
-                                alert(data.error)
-                            })
+                            if (!taken_dates.includes(req_date)) {
+                                $.ajax({
+                                    type: "POST",
+                                    url: '/request-vac',
+                                    data: {date: req_date}
+                                }).done(function (response) {
+                                    location.reload();
+                                }).fail(function (data) {
+                                    data = JSON.parse(data.responseText)
+                                    alert(data.error)
+                                })
+                            }
                         }
                         {% endif %}
                     });

@@ -8,27 +8,28 @@ class Admin():
 
     def __init__(self):
 
-        self.dbfile_path = os.path.dirname(os.path.realpath(__file__)) + "/../users.sqlite"
+        self.users_path = os.path.dirname(os.path.realpath(__file__)) + "/../users.sqlite"
+        self.requests_path = os.path.dirname(os.path.realpath(__file__)) + "/../vacations.sqlite"
         pass
 
-    def dict_factory(cursor, row):
+    def dict_factory(self, cursor, row):
         d = {}
         for idx, col in enumerate(cursor.description):
             d[col[0]] = row[idx]
         return d
 
-    def users_as_dict(self):
-        con = sqlite3.connect(self.dbfile_path)
+    def accounts_as_dict(self):
+        con = sqlite3.connect(self.users_path)
         con.row_factory = self.dict_factory
         cur = con.cursor()
-        cur.execute("SELECT 1 AS a")
+        cur.execute("SELECT user,usergroup AS a")
         return cur.fetchone()["a"]
 
-    def accounts_as_dict(self):
-        con = sqlite3.connect(self.dbfile_path)
+    def requests_as_dict(self):
+        con = sqlite3.connect(self.requests_path)
         con.row_factory = self.dict_factory
         cur = con.cursor()
-        cur.execute("SELECT 1 AS a")
+        cur.execute("SELECT user,date,status AS a")
         return cur.fetchone()["a"]
 
     def approve(self):
