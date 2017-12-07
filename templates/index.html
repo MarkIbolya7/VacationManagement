@@ -75,7 +75,7 @@
                                     type: "POST",
                                     url: '/request-vac',
                                     data: {date: req_date}
-                                }).done(function (response) {
+                                }).done(function () {
                                     location.reload();
                                 }).fail(function (data) {
                                     data = JSON.parse(data.responseText)

@@ -4,7 +4,7 @@ import sqlite3
 import os
 
 
-class Account():
+class Account:
     def __init__(self, user):
         self.user = user
 
@@ -14,8 +14,6 @@ class Account():
         self.c.execute("CREATE TABLE IF NOT EXISTS accounts (user STRING, usergroup STRING)")
 
     def isnewuser(self):
-
-
         #make the first user admin
 
         self.c.execute("SELECT user FROM accounts")
@@ -26,7 +24,7 @@ class Account():
             self.c.execute("SELECT user FROM accounts WHERE user = ?", (self.user,))
             row = self.c.fetchone()
             if row is None:
-                self.c.execute("INSERT INTO accounts (user, usergroup) VALUES (?,?)", (self.user, "viewer"))
+                self.c.execute("INSERT INTO accounts (user, usergroup) VALUES (?,?)", (self.user, "pending"))
 
         self.closeDB()
 

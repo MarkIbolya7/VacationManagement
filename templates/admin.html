@@ -21,23 +21,32 @@
     <script>
         $(document).ready(function(){
            $('.user_change').change(function () {
-               alert(this.id);
+               $.ajax({
+                    type: "POST",
+                    url: '/admin_request',
+                    data: {type:'user_change', user: $(this).attr('data-email'), usergroup: this.value}
+                }).done(function () {
+                   // location.reload();
+                }).fail(function (data) {
+                    data = JSON.parse(data.responseText);
+                    alert(data.error);
+                })
            });
            $('.request_change').change(function () {
-               alert(this.id);
+               $.ajax({
+                    type: "POST",
+                    url: '/admin_request',
+                    data: {type: 'request_change', user: $(this).attr('data-email'), status: this.value, date: $(this).attr('data-date')  }
+                }).done(function () {
+                    //location.reload();
+                }).fail(function (data) {
+                    data = JSON.parse(data.responseText);
+                    alert(data.error);
+                })
            });
         });
     </script>
-$.ajax({
-    type: "POST",
-    url: '/request-vac',
-    data: {date: req_date}
-}).done(function (response) {
-    location.reload();
-}).fail(function (data) {
-    data = JSON.parse(data.responseText)
-    alert(data.error)
-})
+
 </head>
 <body>
 <nav class="navbar navbar-default">
@@ -67,10 +76,11 @@ $.ajax({
             <div class="col-md-4">{{acc['user']}}</div>
             <div class="col-md-4">{{acc['usergroup']}}</div>
             <div class="col-md-4">
-                <select class="user_change" id="{{acc['user']}}">
+                <select class="user_change" date-email="{{acc['user']}}">
                     <option value="admin" {%if acc['usergroup']=='admin' %}selected="selected"{%endif%}>Admin</option>
                     <option value="employee" {%if acc['usergroup']=='employee' %}selected="selected"{%endif%}>Employee</option>
                     <option value="viewer" {%if acc['usergroup']=='viewer' %}selected="selected"{%endif%}>Viewer</option>
+                    <option value="pending" {%if acc['usergroup']=='pending' %}selected="selected"{%endif%}>Pending</option>
                 </select>
             </div>
             {% endfor %}
@@ -85,10 +95,10 @@ $.ajax({
             <div class="col-md-4">{{req['user']}}</div>
             <div class="col-md-4">{{req['date']}}</div>
             <div class="col-md-4">
-                <select class="request_change" data-date="{{req['date']}}" id="{{req['user']}}">
-                    <option value="admin" {%if req['status']=='pending' %}selected="selected"{%endif%}>Pending</option>
-                    <option value="viewer" {%if req['status']=='accepted' %}selected="selected"{%endif%}>Accepted</option>
-                    <option value="pending" {%if req['status']=='declined' %}selected="selected"{%endif%}>Declined</option>
+                <select class="request_change" data-date="{{req['date']}}" data-email="{{req['user']}}">
+                    <option value="pending" {%if req['status']=='pending' %}selected="selected"{%endif%}>Pending</option>
+                    <option value="accepted" {%if req['status']=='accepted' %}selected="selected"{%endif%}>Accepted</option>
+                    <option value="declined" {%if req['status']=='declined' %}selected="selected"{%endif%}>Declined</option>
                 </select>
             </div>
             {% endfor %}

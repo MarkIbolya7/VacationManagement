@@ -75,6 +75,9 @@ def index():
     from vacman.account import Account
     Account(data_json['email']).isnewuser()
     usergroup = Account(data_json['email']).getuserstatus()
+    if usergroup == 'pending':
+        return 'You have no access for this page, and administrator have to approve your account first.'
+
     vacations = Account(data_json['email']).getuservacations()
     return render_template('index.html', account=data_json, usergroup=usergroup, vacations=vacations)
 
@@ -164,6 +167,46 @@ def request_vac():
         try:
             rv = VacMan(data_json['email'], request.form['date'])
             rv.request()
+        except ValueError as err:
+            return jsonify({"error": str(err)}), 400
+
+        return ''
+
+@app.route('/admin_request', methods=['POST'])
+def admin_request():
+    access_token = session.get('access_token')
+    if access_token is None:
+        return redirect(url_for('login'))
+
+    access_token = access_token[0]
+    from urllib2 import Request, urlopen, URLError
+
+    headers = {'Authorization': 'OAuth ' + access_token}
+    req = Request('https://www.googleapis.com/oauth2/v1/userinfo',
+                  None, headers)
+    try:
+        res = urlopen(req)
+    except URLError, e:
+        if e.code == 401:
+            # Unauthorized - bad token
+            session.pop('access_token', None)
+            return redirect(url_for('login'))
+        return res.read()
+    data = res.read()
+    data_json = json.loads(data)
+
+    from vacman.account import Account
+    usergroup = Account(data_json['email']).getuserstatus()
+
+    if (usergroup != 'admin'): # Checking if admin sents the request
+        return ''
+    else:
+        from vacman.admin import Admin
+        try:
+            if request.form['type'] == 'request_change':
+                Admin().change_request(request.form['user'], request.form['date'], request.form['status'])
+            else:
+                Admin().change_user_info(request.form['user'], request.form['usergroup'])
         except ValueError as err:
             return jsonify({"error": str(err)}), 400
 
