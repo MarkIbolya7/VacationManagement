@@ -13,7 +13,11 @@ Follow these steps to run the application using Docker:
 About the application:
 
 You can find the application here: http://localhost:5000/ or http://markibolya7.pythonanywhere.com/
+
 First user to log in with his/her Google Account will receive Admin access
+
 All other users will receive "pending" access, which means it can't access anything till an Admin approved his/her account
+
 From the admin panel (http://localhost:5000/admin or http://markibolya7.pythonanywhere.com/admin) any admin can change other users group and approve/decline or put back a vacation request to pending.
+
 Approved users (except viewers) can request vacation from the front page.
