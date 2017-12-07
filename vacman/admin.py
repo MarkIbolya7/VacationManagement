@@ -1,15 +1,11 @@
-import time
 import sqlite3
-
 import os
 
 
 class Admin:
     def __init__(self):
-
         self.users_path = os.path.dirname(os.path.realpath(__file__)) + "/../users.sqlite"
         self.requests_path = os.path.dirname(os.path.realpath(__file__)) + "/../vacations.sqlite"
-
 
     def dict_factory(self, cursor, row):
         d = {}
@@ -50,5 +46,3 @@ class Admin:
         cur.execute("UPDATE accounts SET usergroup = ? WHERE user = ?", (usergroup, user))
         con.commit()
         con.close()
-
-

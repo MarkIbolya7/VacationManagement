@@ -63,7 +63,7 @@
                         showNotes: true,
                         startWeek: 'monday',
 
-                        {% if usergroup != "pending" %}
+                        {% if usergroup != "pending" and usergroup != "viewer" %}
 
                         dayClick: function (date, view) {
                             taken_dates = [{% for vacation in vacations %}

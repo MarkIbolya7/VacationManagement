@@ -5,8 +5,7 @@ import os
 
 class VacMan:
     def __init__(self, user, date):
-
-        self.user=user
+        self.user = user
         self.date = date
 
         dbfile_path = os.path.dirname(os.path.realpath(__file__)) + "/../vacations.sqlite"

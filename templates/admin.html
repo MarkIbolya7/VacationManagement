@@ -7,6 +7,7 @@
     <link href="/css/bootstrap.css" rel="stylesheet">
     <link href="/css/frontpage.css" rel="stylesheet">
     <link href="/css/theme.css" rel="stylesheet">
+    <link href="/css/admin.css" rel="stylesheet">
 
 
     <link href="/css/calendar.css" rel="stylesheet">
@@ -18,35 +19,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Vacation Management Admin</title>
 
-    <script>
-        $(document).ready(function(){
-           $('.user_change').change(function () {
-               $.ajax({
-                    type: "POST",
-                    url: '/admin_request',
-                    data: {type:'user_change', user: $(this).attr('data-email'), usergroup: this.value}
-                }).done(function () {
-                   // location.reload();
-                }).fail(function (data) {
-                    data = JSON.parse(data.responseText);
-                    alert(data.error);
-                })
-           });
-           $('.request_change').change(function () {
-               $.ajax({
-                    type: "POST",
-                    url: '/admin_request',
-                    data: {type: 'request_change', user: $(this).attr('data-email'), status: this.value, date: $(this).attr('data-date')  }
-                }).done(function () {
-                    //location.reload();
-                }).fail(function (data) {
-                    data = JSON.parse(data.responseText);
-                    alert(data.error);
-                })
-           });
-        });
-    </script>
-
 </head>
 <body>
 <nav class="navbar navbar-default">
@@ -55,7 +27,7 @@
             <a class="navbar-brand" href="/">Vacation Management</a>
         </div>
         <ul class="nav navbar-nav">
-            <li class="" 0><a><img src="{{ account['picture'] }}" style="max-height:19px"> &nbsp;
+            <li><a><img src="{{ account['picture'] }}" style="max-height:19px"> &nbsp;
                 {{ account['name'] }} ({{ usergroup.title() }})</a></li>
             <li class="active"><a href="#">My Calendar</a></li>
         </ul>
@@ -70,18 +42,18 @@
     <div class="row">
         <div class="col-md-12">
             <div class="col-md-4">User</div>
-            <div class="col-md-4">User Group</div>
+            <div class="col-md-4"></div>
             <div class="col-md-4">Change User Group</div>
             {% for acc in accounts %}
             <div class="col-md-4">{{acc['user']}}</div>
-            <div class="col-md-4">{{acc['usergroup']}}</div>
+            <div class="col-md-4"></div>
             <div class="col-md-4">
-                <select class="user_change" date-email="{{acc['user']}}">
+                <select class="user_change" data-email="{{acc['user']}}" {%if acc['user']==account['email'] %}disabled{%endif%}>
                     <option value="admin" {%if acc['usergroup']=='admin' %}selected="selected"{%endif%}>Admin</option>
                     <option value="employee" {%if acc['usergroup']=='employee' %}selected="selected"{%endif%}>Employee</option>
                     <option value="viewer" {%if acc['usergroup']=='viewer' %}selected="selected"{%endif%}>Viewer</option>
                     <option value="pending" {%if acc['usergroup']=='pending' %}selected="selected"{%endif%}>Pending</option>
-                </select>
+                </select> <span class="notify-user-update">Updated</span>
             </div>
             {% endfor %}
         </div>
@@ -99,7 +71,7 @@
                     <option value="pending" {%if req['status']=='pending' %}selected="selected"{%endif%}>Pending</option>
                     <option value="accepted" {%if req['status']=='accepted' %}selected="selected"{%endif%}>Accepted</option>
                     <option value="declined" {%if req['status']=='declined' %}selected="selected"{%endif%}>Declined</option>
-                </select>
+                </select> <span class="notify-request-update">Updated</span>
             </div>
             {% endfor %}
             <hr>

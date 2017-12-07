@@ -14,7 +14,9 @@ class Account:
         self.c.execute("CREATE TABLE IF NOT EXISTS accounts (user STRING, usergroup STRING)")
 
     def isnewuser(self):
-        #make the first user admin
+        '''
+        We make sure the first user is admin else he is on pending status
+        '''
 
         self.c.execute("SELECT user FROM accounts")
         row = self.c.fetchone()

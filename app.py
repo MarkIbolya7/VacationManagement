@@ -2,7 +2,6 @@
 from flask import Flask, redirect, request, url_for, session, render_template, send_from_directory, jsonify, Response
 from flask_oauth import OAuth
 
-from functools import wraps
 import sys
 import json
 
@@ -13,7 +12,7 @@ GOOGLE_CLIENT_ID = '215535738644-fopbesd5dgmcelhcrocf3natuek8i5jo.apps.googleuse
 GOOGLE_CLIENT_SECRET = 'lBdAIaXTCxR4-Dx8jR1dHdSa'
 REDIRECT_URI = '/oauth2callback'
 
-SECRET_KEY = 'development key for VacMan'
+SECRET_KEY = 'development key for Vacation Management'
 DEBUG = True
 
 app = Flask(__name__)
@@ -90,8 +89,8 @@ def login():
 
 @app.route('/logout')
 def logout():
-    session.pop('access_token')
-    return None
+    session.pop('access_token', None)
+    return redirect(url_for('login'))
 
 
 @app.route('/admin')
@@ -118,20 +117,19 @@ def secret_page():
     data = res.read()
     data_json = json.loads(data)
 
-
     from vacman.account import Account
     usergroup = Account(data_json['email']).getuserstatus()
 
-    if (usergroup != 'admin'): # Backend check
+    if (usergroup != 'admin'):  # Backend check
         return ''
 
     from vacman.account import Account
     Account(data_json['email']).isnewuser()
     usergroup = Account(data_json['email']).getuserstatus()
-    accounts= Admin().accounts_as_dict()
+    accounts = Admin().accounts_as_dict()
     requests = Admin().requests_as_dict()
 
-    return render_template('admin.html', account = data_json, usergroup=usergroup, accounts=accounts, requests=requests)
+    return render_template('admin.html', account=data_json, usergroup=usergroup, accounts=accounts, requests=requests)
 
 
 @app.route('/request-vac', methods=['POST'])
@@ -160,7 +158,7 @@ def request_vac():
     from vacman.account import Account
     usergroup = Account(data_json['email']).getuserstatus()
 
-    if (usergroup == 'viewer'): # Backend check
+    if (usergroup == 'viewer' and usergroup == 'pending'):  # Backend check
         return ''
     else:
         from vacman.request_vacation import VacMan
@@ -171,6 +169,7 @@ def request_vac():
             return jsonify({"error": str(err)}), 400
 
         return ''
+
 
 @app.route('/admin_request', methods=['POST'])
 def admin_request():
@@ -198,7 +197,7 @@ def admin_request():
     from vacman.account import Account
     usergroup = Account(data_json['email']).getuserstatus()
 
-    if (usergroup != 'admin'): # Checking if admin sents the request
+    if (usergroup != 'admin'):  # Checking if admin sents the request
         return ''
     else:
         from vacman.admin import Admin
